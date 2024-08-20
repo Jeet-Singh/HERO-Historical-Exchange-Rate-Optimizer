@@ -11,7 +11,7 @@ app = Flask(__name__)
 DATABASE_URL = os.getenv('DATABASE_URL')
 API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
-currencies = ['USD', 'JPY', 'INR', 'AUD', 'GBP', 'HKD']
+currencies = ['USD', 'JPY']
 
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -91,21 +91,17 @@ def fetch_rate(from_currency, to_currency, date):
     }
     try:
         response = requests.get(BASE_URL, params=params)
-        data = response.json()
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raises HTTPError for bad responses
-        # Print response text for debugging
-        print(response.text)
+        response.raise_for_status()
+        print(response.text)  # Debugging output
         data = response.json()
         return {
-                'rate': data['result']['amount'],
-                'timestamp': date.strftime('%Y-%m-%d %H:%M:%S')}
+            'rate': data['result']['amount'],
+            'timestamp': date.strftime('%Y-%m-%d %H:%M:%S')
+        }
     except requests.exceptions.RequestException as e:
         print(f"Request error: {e}")
     except requests.exceptions.JSONDecodeError as e:
         print(f"JSON decode error: {e}")
-       
-      
 
 @app.route('/')
 def index():
@@ -161,7 +157,7 @@ def chart():
 
     return jsonify({
         'success': True,
-        'dates': [d[0] for d in data],  # Convert datetime to string
+        'dates': [d.strftime('%Y-%m-%d %H:%M:%S') for d in dates],
         'rates': rates,
         'moving_avg': moving_avg
     })

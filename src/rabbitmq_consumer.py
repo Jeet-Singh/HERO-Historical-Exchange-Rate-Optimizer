@@ -1,20 +1,26 @@
 import pika
-import sqlite3
 import json
+import os
+import psycopg2
 
-DB_PATH = 'exchange_rates.db'
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+def get_db_connection():
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    return conn
 
 def save_rate_to_db(rate_data):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO exchange_rates (from_currency, to_currency, rate, timestamp)
-        VALUES (?, ?, ?, datetime('now', 'unixepoch'))
+        VALUES (%s, %s, %s, to_timestamp(%s))
     """, (
         rate_data['from_currency'],
         rate_data['to_currency'],
-        rate_data['rate']
+        rate_data['rate'],
+        rate_data['timestamp']
     ))
 
     conn.commit()
@@ -27,7 +33,9 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def consume_messages():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    rabbitmq_url = os.getenv('CLOUDAMQP_URL', 'amqp://localhost')
+    params = pika.URLParameters(rabbitmq_url)
+    connection = pika.BlockingConnection(params)
     channel = connection.channel()
     channel.queue_declare(queue='exchange_rate_queue', durable=True)
 

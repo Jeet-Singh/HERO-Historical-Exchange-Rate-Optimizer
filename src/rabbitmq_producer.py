@@ -2,10 +2,11 @@ import pika
 import requests
 import json
 import time
+import os
 
-API_KEY = 'your_currency_beacon_api_key'
+API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
-CURRENCIES = ['USD', 'JPY', 'INR', 'AUD', 'GBP', 'HKD']
+CURRENCIES = ['USD', 'JPY']
 
 def fetch_hourly_rate(from_currency, to_currency):
     params = {
@@ -28,8 +29,10 @@ def fetch_hourly_rate(from_currency, to_currency):
         return None
 
 def send_message(rate_data):
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-    channel = connection.channel()
+    rabbitmq_url = os.getenv('CLOUDAMQP_URL', 'amqp://localhost')
+    params = pika.URLParameters(rabbitmq_url)
+    rabbitmq_connection = pika.BlockingConnection(params)
+    channel = rabbitmq_connection.channel()
     channel.queue_declare(queue='exchange_rate_queue', durable=True)
 
     message = json.dumps(rate_data)
@@ -40,9 +43,9 @@ def send_message(rate_data):
         properties=pika.BasicProperties(
             delivery_mode=2,  # Make the message persistent
         ))
-    connection.close()
+    rabbitmq_connection.close()
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     while True:
         for from_currency in CURRENCIES:
             for to_currency in CURRENCIES:
