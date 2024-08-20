@@ -96,8 +96,8 @@
                         window.chartInstance.destroy();
                     }
 
-                    // Clean up any undefined or null values in the moving average array
-                    const cleanedMovingAvg = data.moving_avg.map(value => value !== null ? value : NaN);
+                    // Replace null values with 0
+                    const cleanedMovingAvg = data.moving_avg.map(value => value !== null ? value : 0);
 
                     window.chartInstance = new Chart(ctx, {
                         type: 'line',
