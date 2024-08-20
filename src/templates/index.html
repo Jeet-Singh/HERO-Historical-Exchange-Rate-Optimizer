@@ -91,14 +91,15 @@
                     const ctx = document.getElementById('rateChart').getContext('2d');
                     document.getElementById('rateChart').style.display = 'block';
 
-                    if (chartInstance) {
-                        chartInstance.destroy();
+                    // Destroy any existing chart instance to avoid conflicts
+                    if (window.chartInstance) {
+                        window.chartInstance.destroy();
                     }
 
-                    // Replace null values in moving average with NaN for better handling
+                    // Clean up any undefined or null values in the moving average array
                     const cleanedMovingAvg = data.moving_avg.map(value => value !== null ? value : NaN);
 
-                    chartInstance = new Chart(ctx, {
+                    window.chartInstance = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: data.dates,
@@ -146,6 +147,6 @@
                     alert("An error occurred while loading the chart. Please try again later.");
                 });
         }
-    </script>
+</script>
 </body>
 </html>
