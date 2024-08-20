@@ -65,12 +65,14 @@
         }
 
         function fetchChart() {
+            console.log("fetchChart function triggered");
             const from_currency = document.getElementById('from_currency').value;
             const to_currency = document.getElementById('to_currency').value;
 
             fetch(`/chart?from_currency=${from_currency}&to_currency=${to_currency}`)
             .then(response => response.json())
             .then(data => {
+                console.log("Received data:", data);
                 if (data.success) {
                     const ctx = document.getElementById('rateChart').getContext('2d');
                     document.getElementById('rateChart').style.display = 'block';
@@ -108,9 +110,12 @@
                             }
                         }
                     });
+                } else {
+                    console.error("Failed to fetch chart data:", data.error);
                 }
             });
         }
+
     </script>
 </body>
 </html>
