@@ -6,6 +6,8 @@
     <title>Currency Exchange</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.1.0"></script>
 </head>
 <body>
     <div class="container">
@@ -78,18 +80,16 @@
             fetch(`/chart?from_currency=${from_currency}&to_currency=${to_currency}`)
             .then(response => response.json())
             .then(data => {
-                console.log("Received data:", data);  // Log the response data
+                console.log("Received data:", data);
 
                 if (data.success) {
                     const ctx = document.getElementById('rateChart').getContext('2d');
                     document.getElementById('rateChart').style.display = 'block';
 
-                    // Destroy the existing chart instance if it exists
                     if (chartInstance) {
                         chartInstance.destroy();
                     }
 
-                    // Create a new chart instance
                     chartInstance = new Chart(ctx, {
                         type: 'line',
                         data: {
