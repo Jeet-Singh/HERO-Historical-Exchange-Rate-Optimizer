@@ -8,7 +8,7 @@ from datetime import datetime
 CURRENCIES = ['USD', 'JPY', 'EUR', 'GBP', 'AUD', 'CAD']
 
 RABBITMQ_URL = os.getenv('CLOUDAMQP_URL')
-API_KEY = os.getenv('CURRENCY_API_KEY')
+API_KEY = API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
 
 def fetch_rate(from_currency, to_currency):
