@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # Database URL from Heroku environment variable
 DATABASE_URL = os.getenv('DATABASE_URL')
-API_KEY = 'your_currency_beacon_api_key'
+API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
 currencies = ['USD', 'JPY', 'INR', 'AUD', 'GBP', 'HKD']
 
