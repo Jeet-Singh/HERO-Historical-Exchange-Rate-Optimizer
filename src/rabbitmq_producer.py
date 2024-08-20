@@ -6,7 +6,7 @@ import os
 
 API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
-CURRENCIES = ['USD', 'JPY']
+CURRENCIES = ['USD', 'JPY', 'HKO', 'GBP', 'INR']
 
 def fetch_hourly_rate(from_currency, to_currency):
     params = {

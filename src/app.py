@@ -11,7 +11,7 @@ app = Flask(__name__)
 DATABASE_URL = os.getenv('DATABASE_URL')
 API_KEY = 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
 BASE_URL = 'https://api.currencybeacon.com/v1/convert'
-currencies = ['USD', 'JPY']
+CURRENCIES = ['USD', 'JPY', 'HKO', 'GBP', 'INR']
 
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
