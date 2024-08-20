@@ -82,23 +82,30 @@ def fetch_and_store_historical_data():
     print("Historical data fetched and stored.")
 
 def fetch_rate(from_currency, to_currency, date):
-    # Construct the URL and headers as required by your API
-    url = f'https://api.currencybeacon.com/v1/convert?from={from_currency}&to={to_currency}&date={date}'
-    headers = {
-        'Authorization': 'rHA3DChPyh4W1Xj2D905oTs192RRG8rC'
+    params = {
+        'from': from_currency,
+        'to': to_currency,
+        'amount': 1,
+        'api_key': API_KEY,
+        'date': date.strftime('%Y-%m-%d')
     }
-    
     try:
+        response = requests.get(BASE_URL, params=params)
+        data = response.json()
         response = requests.get(url, headers=headers)
         response.raise_for_status()  # Raises HTTPError for bad responses
         # Print response text for debugging
         print(response.text)
         data = response.json()
-        return data
+        return {
+                'rate': data['result']['amount'],
+                'timestamp': date.strftime('%Y-%m-%d %H:%M:%S')}
     except requests.exceptions.RequestException as e:
         print(f"Request error: {e}")
     except requests.exceptions.JSONDecodeError as e:
         print(f"JSON decode error: {e}")
+       
+      
 
 @app.route('/')
 def index():
