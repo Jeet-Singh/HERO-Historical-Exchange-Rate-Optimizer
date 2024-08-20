@@ -69,6 +69,7 @@
             });
         }
 
+        let chartInstance = null;
         function fetchChart() {
             console.log("fetchChart function triggered");
             const from_currency = document.getElementById('from_currency').value;
@@ -83,7 +84,13 @@
                     const ctx = document.getElementById('rateChart').getContext('2d');
                     document.getElementById('rateChart').style.display = 'block';
 
-                    new Chart(ctx, {
+                    // Destroy the existing chart instance if it exists
+                    if (chartInstance) {
+                        chartInstance.destroy();
+                    }
+
+                    // Create a new chart instance
+                    chartInstance = new Chart(ctx, {
                         type: 'line',
                         data: {
                             labels: data.dates,
@@ -126,6 +133,7 @@
                 alert("An error occurred while loading the chart. Please try again later.");
             });
         }
+
     </script>
 </body>
 </html>
