@@ -151,7 +151,10 @@ def chart():
     if not data:
         return jsonify({'success': False, 'error': 'No historical data found.'})
 
-    dates, rates = zip(*data)
+    # Separate the dates and rates
+    rates = [row[0] for row in data]  # Extracting the rate
+    dates = [row[1] for row in data]  # Extracting the timestamp
+
     moving_avg = calculate_moving_average(rates)
 
     return jsonify({
