@@ -39,6 +39,9 @@ def get_latest_rate(from_currency, to_currency):
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Log the query parameters
+    print(f"Querying rate from {from_currency} to {to_currency}")
+
     cursor.execute("""
         SELECT rate FROM exchange_rates
         WHERE from_currency = %s AND to_currency = %s
@@ -46,6 +49,10 @@ def get_latest_rate(from_currency, to_currency):
     """, (from_currency, to_currency))
 
     rate = cursor.fetchone()
+    
+    # Log the result from the database
+    print(f"Fetched rate: {rate}")
+
     cursor.close()
     conn.close()
 
