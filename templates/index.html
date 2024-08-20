@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Exchange</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Currency Exchange Rate</h1>
+        <form id="currencyForm" class="form-inline mt-4">
+            <div class="form-group mr-2">
+                <label for="from_currency" class="mr-2">From:</label>
+                <select class="form-control" id="from_currency" name="from_currency">
+                    {% for currency in currencies %}
+                    <option value="{{ currency }}">{{ currency }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mr-2">
+                <label for="to_currency" class="mr-2">To:</label>
+                <select class="form-control" id="to_currency" name="to_currency">
+                    {% for currency in currencies %}
+                    <option value="{{ currency }}">{{ currency }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="fetchRate()">Get Rate</button>
+            <button type="button" class="btn btn-secondary ml-2" onclick="fetchChart()">Show Chart</button>
+        </form>
+
+        <div id="result" class="mt-4"></div>
+
+        <canvas id="rateChart" class="mt-4" style="display:none;"></canvas>
+    </div>
+
+    <script>
+        function fetchRate() {
+            const from_currency = document.getElementById('from_currency').value;
+            const to_currency = document.getElementById('to_currency').value;
+
+            fetch('/convert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ from_currency, to_currency })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('result').innerHTML = `
+                        <div class="alert alert-success">
+                            1 ${data.from_currency} = ${data.rate} ${data.to_currency}
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `
+                        <div class="alert alert-danger">${data.error}</div>
+                    `;
+                }
+            });
+        }
+
+        function fetchChart() {
+            const from_currency = document.getElementById('from_currency').value;
+            const to_currency = document.getElementById('to_currency').value;
+
+            fetch(`/chart?from_currency=${from_currency}&to_currency=${to_currency}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const ctx = document.getElementById('rateChart').getContext('2d');
+                    document.getElementById('rateChart').style.display = 'block';
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.dates,
+                            datasets: [{
+                                label: 'Exchange Rate',
+                                data: data.rates,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 2,
+                                fill: false
+                            }, {
+                                label: '7-Day Moving Average',
+                                data: data.moving_avg,
+                                borderColor: 'rgba(153, 102, 255, 1)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: false
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
