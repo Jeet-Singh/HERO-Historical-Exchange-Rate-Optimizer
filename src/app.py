@@ -114,21 +114,25 @@ def index():
     return render_template('index.html', currencies=currencies)
 
 @app.route('/convert', methods=['POST'])
+@app.route('/convert', methods=['POST'])
 def convert():
     data = request.get_json()
     from_currency = data.get('from_currency')
     to_currency = data.get('to_currency')
+    amount = float(data.get('amount', 1))
 
     # Log the received values
-    print(f"Received from_currency: {from_currency}, to_currency: {to_currency}")
+    print(f"Received from_currency: {from_currency}, to_currency: {to_currency}, amount: {amount}")
 
     rate = get_latest_rate(from_currency, to_currency)
 
     if rate:
+        converted_amount = rate * amount
         return jsonify({
             'from_currency': from_currency,
             'to_currency': to_currency,
             'rate': rate,
+            'converted_amount': converted_amount,
             'success': True
         })
     else:
@@ -136,6 +140,7 @@ def convert():
             'success': False,
             'error': 'Rate not available. Please try again later.'
         })
+
 
 
 @app.route('/chart')
