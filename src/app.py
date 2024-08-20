@@ -115,8 +115,12 @@ def index():
 
 @app.route('/convert', methods=['POST'])
 def convert():
-    from_currency = request.form.get('from_currency')
-    to_currency = request.form.get('to_currency')
+    data = request.get_json()
+    from_currency = data.get('from_currency')
+    to_currency = data.get('to_currency')
+
+    # Log the received values
+    print(f"Received from_currency: {from_currency}, to_currency: {to_currency}")
 
     rate = get_latest_rate(from_currency, to_currency)
 
@@ -132,6 +136,7 @@ def convert():
             'success': False,
             'error': 'Rate not available. Please try again later.'
         })
+
 
 @app.route('/chart')
 def chart():
