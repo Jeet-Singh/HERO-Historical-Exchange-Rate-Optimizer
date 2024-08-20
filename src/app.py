@@ -86,8 +86,7 @@ def fetch_rate(from_currency, to_currency, date):
         'from': from_currency,
         'to': to_currency,
         'amount': 1,
-        'api_key': API_KEY,
-        'date': date.strftime('%Y-%m-%d')
+        'api_key': API_KEY
     }
     try:
         response = requests.get(BASE_URL, params=params)
@@ -95,7 +94,7 @@ def fetch_rate(from_currency, to_currency, date):
         print(response.text)  # Debugging output
         data = response.json()
         return {
-            'rate': data['result']['amount'],
+            'rate': data['response']['value'],
             'timestamp': date.strftime('%Y-%m-%d %H:%M:%S')
         }
     except requests.exceptions.RequestException as e:
