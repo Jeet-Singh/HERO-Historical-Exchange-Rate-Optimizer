@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Currency Exchange</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -114,11 +116,20 @@
                                 x: {
                                     type: 'time',
                                     time: {
-                                        unit: 'day'
+                                        unit: 'day',
+                                        tooltipFormat: 'll',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
                                     }
                                 },
                                 y: {
-                                    beginAtZero: false
+                                    beginAtZero: false,
+                                    title: {
+                                        display: true,
+                                        text: 'Exchange Rate'
+                                    }
                                 }
                             }
                         }
